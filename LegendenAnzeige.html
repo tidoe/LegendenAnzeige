@@ -1,485 +1,488 @@
 <html>
-	<head>
-		<meta charset="UTF-8"/>
-		<meta name="viewport" content="user-scalable=no"/>
-		<title>Legenden-Anzeige</title>
-		<link rel="author" href="https://legenden-von-andor.de/forum/memberlist.php?mode=viewprofile&u=18387"/>
-		<style type="text/css">
-			a {
-				color: white;
-			}
-			body {
-				background-color: black;
-				color: white;
-				font-family: 'Tahoma';
-				font-size: 16px;
-				overflow-x: hidden;
-				text-align: center;
-				text-size-adjust: 300%;
-			}
-			button, input, label, option, select, table {
-				font-size: 16px;
-				min-width: 10vw;
-				text-size-adjust: 300%;
-			}
-			iframe {
-				pointer-events: none;
-				zoom: 1.03;
-			}
-			iframe, img {
-				background-color: white;
-				position: absolute;
-			}
-			ol, ul {
-				text-align: left;
-			}
-			option {
-				font-family: monospace;
-			}
-			p {
-				font-style: italic;
-			}
-			table {
-				display: inline-table;
-				table-layout: fixed;
-				text-align: center;
-				vertical-align: middle;
-				width: 50vw;
-			}
-			.arrow {
-				zoom: 0.5;
-			}
-			.card {
-				display: inline-block;
-				overflow: hidden;
-				position: relative;
-				vertical-align: middle;
-			}
-			.dev {
-				display: none;
-			}
-			.warning:before {
-				color: yellow;
-				content: "\0026a0\20";
-				font-style: normal;
-			}
-			#pagecount {
-				display: none;
-			}
-			#slider {
-				display: inline-block;
-			}
-			#startpage {
-				text-align: right;
-				width: 50px;
-			}
-		</style>
-	</head>
-	<body lang="de">
-		<div>
-			<label for="filetype"><p>Wie sollen die Legendenkarten eingebunden werden?</p></label>
-			<select id="filetype" onchange="update_instructions()">
-				<option value="jpg" selected>JPG-Upload</option>
-				<option value="pdf">PDF-Upload</option>
-				<option value="url" class="dev">PDF-URL</option>
-			</select>
-		</div>
-		<div>
-			<div id="jpg" style="display:block;">
-				<ol>
-					<li>
-						<p>Konvertiere eine Legende in .jpg-Dateien (eine Datei pro Seite) und entpacke das .zip-Verzeichnis im Ordner <q>Legenden</q>.</p>
-						<p>Mögliche Tools für die Konvertierung sind:
-							<br/>
-							<a href="https://pdftoimage.com/pdf-to-jpg" target="_blank">pdftoimage.com/pdf-to-jpg</a>
-							<br/>
-							<a href="https://pdf2jpg.net" target="_blank">pdf2jpg.net</a>
-							<br/>
-							<a href="https://www.pdf2go.com/de/pdf-in-jpg" target="_blank">pdf2go.com/de/pdf-in-jpg</a>
-							<br/>
-							<a href="https://www.ilovepdf.com/pdf_to_jpg" target="_blank">ilovepdf.com/pdf_to_jpg</a>
-						</p>
-						<p>Für die Legende X.pdf sollte die Verzeichnis-Struktur dann so aussehen:
-						<ul>
-							<li>LegendenAnzeige.html</li>
-							<li>Legenden/X/X-01.jpg</li>
-							<li>Legenden/X/X-02.jpg</li>
-							<li>Legenden/X/...</li>
-						</ul></p>
-					</li>
-					<li><p>Wähle hier eine der .jpg-Dateien (egal welche) aus:</p></li>
-				</ol>
-			</div>
-			<div id="pdf" style="display:none;">
-				<p class="warning">Diese Variante funktioniert nicht für alle Geräte, Browser oder Legenden fehlerfrei.</p>
-				<ol>
-					<li>
-						<p>Speichere eine Legende als .pdf-Datei im Ordner <q>Legenden</q>.</p>
-						<p>Für die Legende X.pdf sollte die Verzeichnis-Struktur dann so aussehen:
-						<ul>
-							<li>LegendenAnzeige.html</li>
-							<li>Legenden/X.pdf</li>
-						</ul></p>
-					</li>
-					<li><p>Wähle hier die .pdf-Datei aus:</p></li>
-				</ol>
-			</div>
-			<div id="url" style="display:none;">
-				<p class="warning">Diese Variante funktioniert nicht für alle Geräte, Browser oder Legenden fehlerfrei.</p>
-				<p>Füge hier die URL der .pdf-Datei ein:</p>
-			</div>
-		</div>
-		<div>
-			<form onsubmit="return false">
-				<input id="filename" type="file" accept=".jpg" placeholder="Keine ausgewählt" onchange="update_page_count()"/>
-				<input id="pagecount" type="number" value="0"/>
-				<br/>
-				<input type="submit" id="filename-button" style="display:none;" onclick="update_page_count()" value="URL auswählen"/>
-			</form>
-		</div>
-		<br/>
-		<div>
-			<p>Die erste Legendenkarte ist auf Seite ...</p>
-			<input id="startpage" type="number" min="1" value="1" readonly/>&nbsp;<button onclick="document.getElementById('startpage').value=Math.max(parseInt(document.getElementById('startpage').value)-1,1).toString();start()">&minus;</button>&nbsp;<button onclick="document.getElementById('startpage').value=(parseInt(document.getElementById('startpage').value)+1).toString();start()">+</button>
-			<p>(vorangehende Seiten werden ignoriert)</p>
-		</div>
-		<br/>
-		<div>
-			<p>In welchem Schema sind die Legendenkarten auf einer Seite angeordnet?</p>
-			<input type="radio" name="scheme" id="X" value="X" onchange="start()" checked/><label for="X"><tt>1&times;&half;</tt>&nbsp;&nbsp;<table border="1" cellpadding="3" cellspacing="3"><tr><td>A<br/>Vorderseite/Rückseite</td></tr></table></label>
-			<br/><br/>
-			<input type="radio" name="scheme" id="1x1" value="1x1" onchange="start()"/><label for="1x1"><tt>1&times;1</tt>&nbsp;&nbsp;<table border="1" cellpadding="3" cellspacing="3"><tr><td>A<br/>Vorderseite</td><td>A<br/>Rückseite</td></tr></table></label>
-			<br/><br/>
-			<input type="radio" name="scheme" id="2x1" value="2x1" onchange="start()"/><label for="2x1"><tt>2&times;1</tt>&nbsp;&nbsp;<table border="1" cellpadding="3" cellspacing="3"><tr><td>A<br/>Vorderseite</td><td>A<br/>Rückseite</td></tr><tr><td>B<br/>Vorderseite</td><td>B<br/>Rückseite</td></tr></table></label>
-		</div>
-		<br/>
-		<div>
-			<p>Benutze die Pfeile, um die Legendenkarten zu verschieben; klicke auf eine Legendenkarte, um sie umzudrehen.</p>
-			<p>Viel Spaß!</p>
-			<div id="slider"></div>
-		</div>
-		<br/>
-		<script type="text/javascript">
-			// Constants:
-			const a4_h_mm = 297; 	// A4 paper height
-			const a4_w_mm = 210;		// A4 paper width
-			const card_h_mm = 120;	// legend card height
-			const card_w_mm = 80;	// legend card width
-			const px_per_mm = 3.78;	// approx. number of pixels per mm
-			function add_to_pixels(px, n){
-				/* Function that takes a string of pixels (e.g. "5px") and a number of pixels (e.g. "-3") and returns the sum (e.g. "2px");
-					since it is used for changing top/left, the value has to be negative.
-				*/
-				return Math.min((parseInt(px.replace("px"))+n), 0).toString() + "px";
-			}
-			function get_param(name){
-				/* Function to get user-input parameters.
-				*/
-				if(name == "scheme"){
-					return document.querySelector('input[name="' + name + '"]:checked').value;
-				}
-				return document.getElementById(name).value;
-			}
-			function update_instructions(){
-				/* Function to update the instructions shown to the user.
-				*/
-				document.getElementById("jpg").style.display = "none";
-				document.getElementById("pdf").style.display = "none";
-				document.getElementById("url").style.display = "none";
-				var filetype = get_param("filetype");
-				document.getElementById(filetype).style.display = "block";
-				var input = document.getElementById("filename");
-				var button = document.getElementById("filename-button");
-				if(filetype == "url"){
-					input.type = "url";
-					input.style.width = "80vw";
-					input.pattern = ".+\.pdf";
-					input.removeAttribute("accept");
-					button.style.display = "inline-block";
-				}
-				else {
-					input.type = "file";
-					input.style.width = "auto";
-					input.accept = "." + filetype;
-					input.removeAttribute("pattern");
-					button.style.display = "none";
-				}
-			}
-			function update_page_count(){
-				/* Set the page count of a PDF file the "pagecount" element
-					and execute `start()`.
-				*/
-				var input = document.getElementById("filename");
-				if(get_param("filetype") == "pdf"){
-					// If it's a PDF file, try to read the page number from the document.
-					if(input.files.length > 0){
-						var reader = new FileReader();
-						reader.readAsBinaryString(input.files[0]);
-						reader.onloadend = function(){
-							var count = 2*15; // assume two pages for every letter (if reading from the PDF fails)
-							var m = reader.result.match(/\/Type[\s]*\/Page[^s]/g);
-							if(!(m == null || isNaN(m.length))){
-								count = m.length;
-							}
-							document.getElementById("pagecount").value = count.toString();
-							start();
-						}
-					}
-				}
-				else {
-					// If it's a JPG file or an URL, just execute `start()`.
-					document.getElementById("pagecount").value = "30";
-					start();
-				}
-			}
-			function create_button(pos){
-				/* Create an arrow button for an image.
-				*/
-				var btn = document.createElement("button");
-				btn.innerHTML = pos;
-				btn.className = "arrow";
-				btn.onclick = function(){
-					// On click, the window of the image and all images at the same position
-					// on other pages is moved 4 pixels in the arrow's direction.
-					var btn_img = this.parentElement.getElementsByClassName("card")[0].querySelectorAll("iframe,img")[0];
-					var imgs = document.querySelectorAll("iframe,img");
-					for(var i = 0; i < imgs.length; ++i){
-						var img = imgs[i];
-						if(img.id.split("-").pop() == btn_img.id.split("-").pop()){
-							var s = (img.name == btn_img.name ? 1 : -1);
-							if(pos == "&#8592;"){ // to the left
-								img.style.left = add_to_pixels(img.style.left, -4*s);
-							}
-							else if(pos == "&#8593;"){ // to the top
-								img.style.top = add_to_pixels(img.style.top, -4);
-							}
-							else if(pos == "&#8594;"){ // to the right
-								img.style.left = add_to_pixels(img.style.left, +4*s);
-							}
-							else if(pos == "&#8595;"){ // to the bottom
-								img.style.top = add_to_pixels(img.style.top, +4);
-							}
-						}
-					}
-				};
-				return btn;
-			}
-			function format_num(i, number, z){
-				/* Format a number as it is in the filename (add leading zeros).
-				*/
-				var n = i.toString();
-				if(number.startsWith("0") || (z == 1 && n.length < number.length)){
-					while(n.length < number.length){
-						n = "0" + n;
-					}
-				}
-				return n;
-			}
-			function create_img(scheme, path, legend, base, number, ending, z_start, z, i_start, i, k){
-				/* Append a card image to the "slider" element.
-					- "scheme": value of the "scheme" input
-					- "legend": name of the legend, as in the file name
-					- "ending": "pdf" or "jpg"
-					- from the loop below:
-						- "z_start": first zeroing index
-						- "z": zeroing index
-						- "i_start": first page index
-						- "i": page index
-						- "k": card index on page
-				*/
-				if(legend == "Checkliste"){
-					// Use the checklist images from the web.
-					var img = document.createElement("img");
-					img.src = "https://www.poeppelkiste.de/rezensionen/2012/andor/liste.gif";
-					img.alt = "https://legenden-von-andor.de/forum/download/file.php?id=798&sid=4eb4246852856b032ff1ac1cd2c933f3&mode=view";
-				}
-				else if(ending.toLowerCase() == "pdf"){
-					// Use the PDF file from the "Legenden" directory.
-					var img = document.createElement("iframe"); // "iframe" for PDF file
-					img.alt = "";
-					var zm = Math.min(0.3*window.innerWidth, 0.2*window.innerHeight); // compute a zoom factor (for later rescaling to screen width); 0.3 seems to work fine
-					if(get_param("filetype") == "url"){
-						img.style.transform = "scale(" + (scheme == "X" ? "1" : (zm/100.0).toString()) + ")";
-						img.style.transformOrigin = "top center";
-						img.src = path + legend + "." + ending + "&embedded=true";
-						if(scheme == "X"){ // full-page mode
-							img.alt = path + legend + "." + ending + "&embedded=true";
-						}
-					}
-					else {
-						img.src = path + legend + "." + ending + "#toolbar=0&navpanes=0&scrollbar=1" + (scheme == "X" ? "" : "&zoom=" + Math.round(zm).toString()) + "&page=" + i.toString() + (scheme == "X" ? "&view=Fit" : "");
-						if(scheme == "X"){ // full-page mode
-							img.alt = path + legend + "." + ending + "#toolbar=0&navpanes=0&scrollbar=1" + (scheme == "X" ? "" : "&zoom=" + Math.round(zm).toString()) + "&page=" + (i+1).toString() + (scheme == "X" ? "&view=Fit" : "");
-						}
-					}
-				}
-				else {
-					// Use the JPG files from a "Legenden" subdirectory.
-					var img = document.createElement("img"); // "img" for JPG file
-					img.src = path + legend + "/" + legend + base + format_num(i, number, z) + "." + ending;
-					img.alt = "";
-					if(scheme == "X"){ // full-page mode
-						img.alt = path + legend + "/" + legend + base + format_num(i+1, number, z) + "." + ending;
-					}
-				}
-				// Image ID:
-				img.id = (z == 1 && i <= 9 ? "0" : "") + i.toString() + "-" + k.toString();
-				// Image side ("front"):
-				img.name = "front";
-				if(scheme == "X" && i % 2 != i_start % 2){
-					// In full-page mode, only every second image should be shown at the start:
-					return;
-				}
-				var n_pages = 1;
-				var i_page = 0;
-				if(ending == "pdf" && get_param("filetype") == "url"){
-					// Embedded PDF files show all pages; so we have to work with special "top" and "left" values;
-					// for uploaded PDFs and JPGs, the values are neutralised with 1 and 0.
-					n_pages = parseInt(get_param("pagecount"));
-					i_page = i-1;
-				}
-				if(scheme == "X"){
-					// full-page mode
-					img.style.height = (n_pages*card_h_mm).toString() + "mm";
-					img.style.width = card_w_mm.toString() + "mm";
-					if(ending == "pdf" && get_param("filetype") == "url"){
-						img.style.top = "-" + Math.round((px_per_mm*card_h_mm-35)*i_page+15).toString() + "px";
-						img.style.left = "-12px";
-					}
-					else {
-						img.style.top = (ending.toLowerCase() == "pdf" ? "-5px" : "0px");
-						img.style.left = (ending.toLowerCase() == "pdf" ? "-5px" : "0px");
-					}
-				}
-				else if((ending.toLowerCase() == "pdf" && scheme == "1x1") || img.width > img.height){
-					// landscape mode (is assumed for PDFs in 1x1 scheme)
-					img.style.height = (n_pages*a4_w_mm).toString() + "mm";
-					img.style.width = a4_h_mm.toString() + "mm";
-					img.style.top = (-Math.round(px_per_mm*((k == "1" == 1 ? 0 : a4_w_mm/2.0)+((a4_w_mm/2.0)-card_h_mm)/2.0+a4_w_mm*i_page))).toString() + "px";
-					img.style.left = (-Math.round(px_per_mm*((a4_h_mm/2.0)-card_w_mm)/2.0)).toString() + "px";
-				}
-				else {
-					// portrait mode
-					img.style.height = (n_pages*a4_h_mm).toString() + "mm";
-					img.style.width = a4_w_mm.toString() + "mm";
-					img.style.top = (-Math.round(px_per_mm*((k == "1" ? 0 : a4_h_mm/2.0)+((a4_h_mm/2.0)-card_h_mm)/2.0+a4_h_mm*i_page))).toString() + "px";
-					img.style.left = (-Math.round(px_per_mm*((a4_w_mm/2.0)-card_w_mm)/2.0)).toString() + "px";
-				}
-				// Create the image container:
-				var div = document.createElement("div");
-				div.className = "card";
-				var offset_h_mm = 0;
-				var offset_w_mm = 0;
-				if(ending.toLowerCase() == "pdf" && scheme == "X"){
-					// Cut off the embedding background from PDFs in full-page mode:
-					offset_h_mm = Math.round(40/px_per_mm); // -40px height seems to work fine
-					offset_w_mm = Math.round(10/px_per_mm); // -10px width seems to work fine
-				}
-				div.style.height = (card_h_mm-offset_h_mm).toString() + "mm";
-				div.style.width = (card_w_mm-offset_w_mm).toString() + "mm";
-				div.style.zoom = 1.0*card_w_mm/(card_w_mm-offset_w_mm);
-				div.appendChild(img);
-				// Create the card container:
-				var div2 = document.createElement("div");
-				div2.appendChild(div);
-				if(scheme != "X"){
-					// In non-full-page mode, insert buttons to adjust the card window:
-					div2.appendChild(document.createElement("br"));
-					div2.appendChild(create_button("&#8592;"));
-					div2.appendChild(create_button("&#8593;"));
-					div2.appendChild(create_button("&#8595;"));
-					div2.appendChild(create_button("&#8594;"));
-				}
-				div2.appendChild(document.createElement("br"));
-				div2.appendChild(document.createElement("br"));
-				document.getElementById("slider").appendChild(div2);
-				img.onerror = function(){
-					// If an image is not found, remove the card container from the "slider":
-					document.getElementById("slider").removeChild(document.getElementById(this.id).parentElement.parentElement);
-				};
-				div.onclick = function(){
-					// If the image container is clicked, turn the card.
-					var img = this.querySelectorAll("iframe,img")[0];
-					if(img.alt != ""){
-						// If the card's other side has an own image, create a new image element:
-						var imgx = document.createElement(img.tagName);
-						imgx.src = img.alt;
-						imgx.alt = img.src;
-						imgx.id = img.id;
-						imgx.style.height = img.style.height;
-						imgx.style.width = img.style.width;
-						imgx.style.top = img.style.top;
-						imgx.style.left = img.style.left;
-						if(get_param("filetype") == "url" && img.tagName.toLowerCase() == "iframe"){
-							imgx.style.transform = img.style.transform;
-							imgx.style.transformOrigin = img.style.transformOrigin;
-							var s = (img.name == "front" ? -1 : 1);
-							imgx.style.top = add_to_pixels(img.style.top, s*Math.round(px_per_mm*card_h_mm-35));
-						}
-						imgx.name = (img.name == "front" ? "back" : "front");
-						this.removeChild(img);
-						this.appendChild(imgx);
-					}
-					else {
-						// If the card's other side is in the same image, horizontally mirror the image window:
-						var inv_left = (img.style.left.startsWith("-") ? img.style.left.substr(1) : "-" + img.style.left);
-						img.style.left = add_to_pixels(inv_left, Math.round(px_per_mm*(card_w_mm-parseInt(img.style.width.replace("mm", "")))));
-						img.name = (img.name == "front" ? "back" : "front");
-					}
-				};
-			}
-			function start(){
-				// Filename of the file selected by the user:
-				var filename = get_param("filename");
-				// Path to the file:
-				var path = "https://docs.google.com/viewer?url=";
-				if(get_param("filetype") != "url"){
-					filename = filename.replace(/.*[\/\\]/, "");
-					path = "Legenden/";
-				}
-				// File ending, legend's name and (for images:) numbering style:
-				var parts = filename.split(".");
-				var ending = parts.pop();
-				var fullname = parts.join(".");
-				var legend = fullname;
-				var base = null;
-				var number = null;
-				if(get_param("filetype") == "jpg"){
-					legend = legend.replace(/[\-\_](page\-)?\d+$/, "");
-					base = fullname.substr(legend.length).replace(/\d+$/, "");
-					number = fullname.substr(legend.length + base.length);
-				}
-				// First page with legend cards and maximum number of pages to load:
-				var i_start = parseInt(get_param("startpage"));
-				var max_pages = (ending.toLowerCase() == "pdf" ? parseInt(get_param("pagecount")) : 99);
-				// Number of legend cards per page:
-				var k_num = 1;
-				if(get_param("scheme") != "X"){
-					k_num = get_param("scheme").split("x");
-					k_num = parseFloat(k_num[0])*parseFloat(k_num[1]);
-				}
-				// Try source paths with and without leading zeros (0) or only without leading zeros (1):
-				var z_start = (ending.toLowerCase() == "pdf" ? 1 : 0);
-				// Clear legend cards slider:
-				document.getElementById("slider").innerHTML = "";
-				// Add checklist:
-				create_img("X", "", "Checkliste", "", 1, "jpg", 0, 0, i_start-1, i_start-1, 0);
-				// Add legend cards:
-				for(var z = z_start; z <= 1; ++z){
-					for(var i = i_start; i <= (z == 0 ? Math.min(9, max_pages) : max_pages); ++i){
-						for(var k = 1; k <= k_num; ++k){
-							create_img(get_param("scheme"), path, legend, base, number, ending, z_start, z, i_start, i, k);
-						}
-					}
-				}
-			}
-			// Resize slider so that legend cards fit the screen width/height:
-			var slider = document.getElementById("slider");
-			var slider_w = Math.round(px_per_mm*card_w_mm);
-			var window_w = window.innerWidth;
-			var slider_h = Math.round(px_per_mm*card_h_mm);
-			var window_h = window.innerHeight;
-			slider.style.zoom = (0.9*Math.min(window_w/slider_w, window_h/slider_h)).toString();
-		</script>
-	</body>
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="user-scalable=no"/>
+        <title>Legenden-Anzeige</title>
+        <link rel="author" href="https://legenden-von-andor.de/forum/memberlist.php?mode=viewprofile&u=18387"/>
+        <style type="text/css">
+            a {
+                color: white;
+            }
+            body {
+                background-color: black;
+                color: white;
+                font-family: 'Tahoma';
+                font-size: 16px;
+                overflow-x: hidden;
+                text-align: center;
+                text-size-adjust: 300%;
+            }
+            button, input, label, option, select, table {
+                font-size: 16px;
+                min-width: 10vw;
+                text-size-adjust: 300%;
+            }
+            iframe {
+                pointer-events: none;
+                zoom: 1.03;
+            }
+            iframe, img {
+                background-color: white;
+                position: absolute;
+            }
+            ol, ul {
+                text-align: left;
+            }
+            option {
+                font-family: monospace;
+            }
+            p {
+                font-style: italic;
+            }
+            table {
+                display: inline-table;
+                table-layout: fixed;
+                text-align: center;
+                vertical-align: middle;
+                width: 50vw;
+            }
+            .arrow {
+                zoom: 0.5;
+            }
+            .card {
+                display: inline-block;
+                overflow: hidden;
+                position: relative;
+                vertical-align: middle;
+            }
+            .dev {
+                display: none;
+            }
+            .warning:before {
+                color: yellow;
+                content: "\0026a0\20";
+                font-style: normal;
+            }
+            #pagecount {
+                display: none;
+            }
+            #slider {
+                display: inline-block;
+            }
+            #startpage {
+                text-align: right;
+                width: 50px;
+            }
+        </style>
+    </head>
+    <body lang="de">
+        <div>
+            <label for="filetype"><p>Wie sollen die Legendenkarten eingebunden werden?</p></label>
+            <select id="filetype" onchange="update_instructions()">
+                <option value="jpg" selected>JPG-Upload</option>
+                <option value="pdf">PDF-Upload</option>
+                <option value="url" class="dev">PDF-URL</option>
+            </select>
+        </div>
+        <div>
+            <div id="jpg" style="display:block;">
+                <ol>
+                    <li>
+                        <p>Konvertiere eine Legende in .jpg-Dateien (eine Datei pro Seite) und entpacke das .zip-Verzeichnis im Ordner <q>Legenden</q>.</p>
+                        <p>Mögliche Tools für die Konvertierung sind:
+                            <br/>
+                            <a href="https://pdftoimage.com/pdf-to-jpg" target="_blank">pdftoimage.com/pdf-to-jpg</a>
+                            <br/>
+                            <a href="https://pdf2jpg.net" target="_blank">pdf2jpg.net</a>
+                            <br/>
+                            <a href="https://www.pdf2go.com/de/pdf-in-jpg" target="_blank">pdf2go.com/de/pdf-in-jpg</a>
+                            <br/>
+                            <a href="https://www.ilovepdf.com/pdf_to_jpg" target="_blank">ilovepdf.com/pdf_to_jpg</a>
+                        </p>
+                        <p>Für die Legende X.pdf sollte die Verzeichnis-Struktur dann so aussehen:
+                        <ul>
+                            <li>LegendenAnzeige.html</li>
+                            <li>Legenden/X/X-01.jpg</li>
+                            <li>Legenden/X/X-02.jpg</li>
+                            <li>Legenden/X/...</li>
+                        </ul></p>
+                    </li>
+                    <li><p>Wähle hier eine der .jpg-Dateien (egal welche) aus:</p></li>
+                </ol>
+            </div>
+            <div id="pdf" style="display:none;">
+                <p class="warning">Diese Variante funktioniert nicht für alle Geräte, Browser oder Legenden fehlerfrei.</p>
+                <ol>
+                    <li>
+                        <p>Speichere eine Legende als .pdf-Datei im Ordner <q>Legenden</q>.</p>
+                        <p>Für die Legende X.pdf sollte die Verzeichnis-Struktur dann so aussehen:
+                        <ul>
+                            <li>LegendenAnzeige.html</li>
+                            <li>Legenden/X.pdf</li>
+                        </ul></p>
+                    </li>
+                    <li><p>Wähle hier die .pdf-Datei aus:</p></li>
+                </ol>
+            </div>
+            <div id="url" style="display:none;">
+                <p class="warning">Diese Variante funktioniert nicht für alle Geräte, Browser oder Legenden fehlerfrei.</p>
+                <p>Füge hier die URL der .pdf-Datei ein:</p>
+            </div>
+        </div>
+        <div>
+            <form onsubmit="return false">
+                <input id="filename" type="file" accept=".jpg" placeholder="Keine ausgewählt" onchange="update_page_count()"/>
+                <input id="pagecount" type="number" value="0"/>
+                <br/>
+                <input type="submit" id="filename-button" style="display:none;" onclick="update_page_count()" value="URL auswählen"/>
+            </form>
+        </div>
+        <br/>
+        <div>
+            <p>Die erste Legendenkarte ist auf Seite ...</p>
+            <input id="startpage" type="number" min="1" value="1" readonly/>&nbsp;<button onclick="document.getElementById('startpage').value=Math.max(parseInt(document.getElementById('startpage').value)-1,1).toString();start()">&minus;</button>&nbsp;<button onclick="document.getElementById('startpage').value=(parseInt(document.getElementById('startpage').value)+1).toString();start()">+</button>
+            <p>(vorangehende Seiten werden ignoriert)</p>
+        </div>
+        <br/>
+        <div>
+            <p>In welchem Schema sind die Legendenkarten auf einer Seite angeordnet?</p>
+            <input type="radio" name="scheme" id="X" value="X" onchange="start()" checked/><label for="X"><tt>1&times;&half;</tt>&nbsp;&nbsp;<table border="1" cellpadding="3" cellspacing="3"><tr><td>A<br/>Vorderseite/Rückseite</td></tr></table></label>
+            <br/><br/>
+            <input type="radio" name="scheme" id="1x1" value="1x1" onchange="start()"/><label for="1x1"><tt>1&times;1</tt>&nbsp;&nbsp;<table border="1" cellpadding="3" cellspacing="3"><tr><td>A<br/>Vorderseite</td><td>A<br/>Rückseite</td></tr></table></label>
+            <br/><br/>
+            <input type="radio" name="scheme" id="2x1" value="2x1" onchange="start()"/><label for="2x1"><tt>2&times;1</tt>&nbsp;&nbsp;<table border="1" cellpadding="3" cellspacing="3"><tr><td>A<br/>Vorderseite</td><td>A<br/>Rückseite</td></tr><tr><td>B<br/>Vorderseite</td><td>B<br/>Rückseite</td></tr></table></label>
+        </div>
+        <br/>
+        <div>
+            <p>Benutze die Pfeile, um die Legendenkarten zu verschieben; klicke auf eine Legendenkarte, um sie umzudrehen.</p>
+            <p>Viel Spaß!</p>
+            <div id="slider"></div>
+        </div>
+        <br/>
+        <script type="text/javascript">
+            // Constants:
+            const a4_h_mm = 297;    // A4 paper height
+            const a4_w_mm = 210;    // A4 paper width
+            const card_h_mm = 120;  // legend card height
+            const card_w_mm = 80;   // legend card width
+            const px_per_mm = 3.78; // approx. number of pixels per mm
+            function add_to_pixels(px, n){
+                /* Function that takes a string of pixels (e.g. "5px") and a number of pixels (e.g. "-3") and returns the sum (e.g. "2px");
+                   since it is used for changing top/left, the value has to be negative.
+                */
+                return Math.min((parseInt(px.replace("px"))+n), 0).toString() + "px";
+            }
+            function get_param(name){
+                /* Function to get user-input parameters.
+                */
+                if(name == "scheme"){
+                    return document.querySelector('input[name="' + name + '"]:checked').value;
+                }
+                return document.getElementById(name).value;
+            }
+            function update_instructions(){
+                /* Function to update the instructions shown to the user.
+                */
+                document.getElementById("jpg").style.display = "none";
+                document.getElementById("pdf").style.display = "none";
+                document.getElementById("url").style.display = "none";
+                var filetype = get_param("filetype");
+                document.getElementById(filetype).style.display = "block";
+                var input = document.getElementById("filename");
+                var button = document.getElementById("filename-button");
+                if(filetype == "url"){
+                    input.type = "url";
+                    input.style.width = "80vw";
+                    input.pattern = ".+\.pdf";
+                    input.removeAttribute("accept");
+                    button.style.display = "inline-block";
+                }
+                else {
+                    input.type = "file";
+                    input.style.width = "auto";
+                    input.accept = "." + filetype;
+                    input.removeAttribute("pattern");
+                    button.style.display = "none";
+                }
+            }
+            function update_page_count(){
+                /* Set the page count of a PDF file the "pagecount" element
+                   and execute `start()`.
+                */
+                var input = document.getElementById("filename");
+                if(get_param("filetype") == "pdf"){
+                    // If it's a PDF file, try to read the page number from the document.
+                    if(input.files.length > 0){
+                        var reader = new FileReader();
+                        reader.readAsBinaryString(input.files[0]);
+                        reader.onloadend = function(){
+                            var count = 2*15; // assume two pages for every letter (if reading from the PDF fails)
+                            var m = reader.result.match(/\/Type[\s]*\/Page[^s]/g);
+                            if(!(m == null || isNaN(m.length))){
+                                count = m.length;
+                            }
+                            document.getElementById("pagecount").value = count.toString();
+                            start();
+                        }
+                    }
+                }
+                else {
+                    // If it's a JPG file or an URL, just execute `start()`.
+                    document.getElementById("pagecount").value = "30";
+                    start();
+                }
+            }
+            function create_button(pos){
+                /* Create an arrow button for an image.
+                */
+                var btn = document.createElement("button");
+                btn.innerHTML = pos;
+                btn.className = "arrow";
+                btn.onclick = function(){
+                    // On click, the window of the image and all images at the same position
+                    // on other pages is moved 4 pixels in the arrow's direction.
+                    var btn_img = this.parentElement.getElementsByClassName("card")[0].querySelectorAll("iframe,img")[0];
+                    var imgs = document.querySelectorAll("iframe,img");
+                    for(var i = 0; i < imgs.length; ++i){
+                        var img = imgs[i];
+                        if(img.id.split("-").pop() == btn_img.id.split("-").pop()){
+                            var s = (img.name == btn_img.name ? 1 : -1);
+                            if(pos == "&#8592;"){ // to the left
+                                img.style.left = add_to_pixels(img.style.left, -4*s);
+                            }
+                            else if(pos == "&#8593;"){ // to the top
+                                img.style.top = add_to_pixels(img.style.top, -4);
+                            }
+                            else if(pos == "&#8594;"){ // to the right
+                                img.style.left = add_to_pixels(img.style.left, +4*s);
+                            }
+                            else if(pos == "&#8595;"){ // to the bottom
+                                img.style.top = add_to_pixels(img.style.top, +4);
+                            }
+                        }
+                    }
+                };
+                return btn;
+            }
+            function format_num(i, number, z){
+                /* Format a number as it is in the filename (add leading zeros).
+                */
+                var n = i.toString();
+                if(number.startsWith("0") || (z == 1 && n.length < number.length)){
+                    while(n.length < number.length){
+                        n = "0" + n;
+                    }
+                }
+                return n;
+            }
+            function create_img(scheme, path, legend, base, number, ending, z_start, z, i_start, i, k){
+                /* Append a card image to the "slider" element.
+                   - "scheme": value of the "scheme" input
+                   - "path": path to the legend card files
+                   - "legend": name of the legend, as in the file name
+                   - "base": part between legend name and number, as in file name
+                   - "number": number as in file name (of one of the files)
+                   - "ending": "pdf" or "jpg"
+                   - from the loop below:
+                       - "z_start": first zeroing index
+                       - "z": zeroing index
+                       - "i_start": first page index
+                       - "i": page index
+                       - "k": card index on page
+                */
+                if(legend == "Checkliste"){
+                    // Use the checklist images from the web.
+                    var img = document.createElement("img");
+                    img.src = "https://www.poeppelkiste.de/rezensionen/2012/andor/liste.gif";
+                    img.alt = "https://legenden-von-andor.de/forum/download/file.php?id=798&sid=4eb4246852856b032ff1ac1cd2c933f3&mode=view";
+                }
+                else if(ending.toLowerCase() == "pdf"){
+                    // Use the PDF file from the "Legenden" directory.
+                    var img = document.createElement("iframe"); // "iframe" for PDF file
+                    img.alt = "";
+                    var zm = Math.min(0.3*window.innerWidth, 0.2*window.innerHeight); // compute a zoom factor (for later rescaling to screen width); 0.3 seems to work fine
+                    if(get_param("filetype") == "url"){
+                        img.style.transform = "scale(" + (scheme == "X" ? "1" : (zm/100.0).toString()) + ")";
+                        img.style.transformOrigin = "top center";
+                        img.src = path + legend + "." + ending + "&embedded=true";
+                        if(scheme == "X"){ // full-page mode
+                            img.alt = path + legend + "." + ending + "&embedded=true";
+                        }
+                    }
+                    else {
+                        img.src = path + legend + "." + ending + "#toolbar=0&navpanes=0&scrollbar=1" + (scheme == "X" ? "" : "&zoom=" + Math.round(zm).toString()) + "&page=" + i.toString() + (scheme == "X" ? "&view=Fit" : "");
+                        if(scheme == "X"){ // full-page mode
+                            img.alt = path + legend + "." + ending + "#toolbar=0&navpanes=0&scrollbar=1" + (scheme == "X" ? "" : "&zoom=" + Math.round(zm).toString()) + "&page=" + (i+1).toString() + (scheme == "X" ? "&view=Fit" : "");
+                        }
+                    }
+                }
+                else {
+                    // Use the JPG files from a "Legenden" subdirectory.
+                    var img = document.createElement("img"); // "img" for JPG file
+                    img.src = path + legend + "/" + legend + base + format_num(i, number, z) + "." + ending;
+                    img.alt = "";
+                    if(scheme == "X"){ // full-page mode
+                        img.alt = path + legend + "/" + legend + base + format_num(i+1, number, z) + "." + ending;
+                    }
+                }
+                // Image ID:
+                img.id = (z == 1 && i <= 9 ? "0" : "") + i.toString() + "-" + k.toString();
+                // Image side ("front"):
+                img.name = "front";
+                if(scheme == "X" && i % 2 != i_start % 2){
+                    // In full-page mode, only every second image should be shown at the start:
+                    return;
+                }
+                var n_pages = 1;
+                var i_page = 0;
+                if(ending == "pdf" && get_param("filetype") == "url"){
+                    // Embedded PDF files show all pages; so we have to work with special "top" and "left" values;
+                    // for uploaded PDFs and JPGs, the values are neutralised with 1 and 0.
+                    n_pages = parseInt(get_param("pagecount"));
+                    i_page = i-1;
+                }
+                if(scheme == "X"){
+                    // full-page mode
+                    img.style.height = (n_pages*card_h_mm).toString() + "mm";
+                    img.style.width = card_w_mm.toString() + "mm";
+                    if(ending == "pdf" && get_param("filetype") == "url"){
+                        img.style.top = "-" + Math.round((px_per_mm*card_h_mm-35)*i_page+15).toString() + "px";
+                        img.style.left = "-12px";
+                    }
+                    else {
+                        img.style.top = (ending.toLowerCase() == "pdf" ? "-5px" : "0px");
+                        img.style.left = (ending.toLowerCase() == "pdf" ? "-5px" : "0px");
+                    }
+                }
+                else if((ending.toLowerCase() == "pdf" && scheme == "1x1") || img.width > img.height){
+                    // landscape mode (is assumed for PDFs in 1x1 scheme)
+                    img.style.height = (n_pages*a4_w_mm).toString() + "mm";
+                    img.style.width = a4_h_mm.toString() + "mm";
+                    img.style.top = (-Math.round(px_per_mm*((k == "1" == 1 ? 0 : a4_w_mm/2.0)+((a4_w_mm/2.0)-card_h_mm)/2.0+a4_w_mm*i_page))).toString() + "px";
+                    img.style.left = (-Math.round(px_per_mm*((a4_h_mm/2.0)-card_w_mm)/2.0)).toString() + "px";
+                }
+                else {
+                    // portrait mode
+                    img.style.height = (n_pages*a4_h_mm).toString() + "mm";
+                    img.style.width = a4_w_mm.toString() + "mm";
+                    img.style.top = (-Math.round(px_per_mm*((k == "1" ? 0 : a4_h_mm/2.0)+((a4_h_mm/2.0)-card_h_mm)/2.0+a4_h_mm*i_page))).toString() + "px";
+                    img.style.left = (-Math.round(px_per_mm*((a4_w_mm/2.0)-card_w_mm)/2.0)).toString() + "px";
+                }
+                // Create the image container:
+                var div = document.createElement("div");
+                div.className = "card";
+                var offset_h_mm = 0;
+                var offset_w_mm = 0;
+                if(ending.toLowerCase() == "pdf" && scheme == "X"){
+                    // Cut off the embedding background from PDFs in full-page mode:
+                    offset_h_mm = Math.round(40/px_per_mm); // -40px height seems to work fine
+                    offset_w_mm = Math.round(10/px_per_mm); // -10px width seems to work fine
+                }
+                div.style.height = (card_h_mm-offset_h_mm).toString() + "mm";
+                div.style.width = (card_w_mm-offset_w_mm).toString() + "mm";
+                div.style.zoom = 1.0*card_w_mm/(card_w_mm-offset_w_mm);
+                div.appendChild(img);
+                // Create the card container:
+                var div2 = document.createElement("div");
+                div2.appendChild(div);
+                if(scheme != "X"){
+                    // In non-full-page mode, insert buttons to adjust the card window:
+                    div2.appendChild(document.createElement("br"));
+                    div2.appendChild(create_button("&#8592;"));
+                    div2.appendChild(create_button("&#8593;"));
+                    div2.appendChild(create_button("&#8595;"));
+                    div2.appendChild(create_button("&#8594;"));
+                }
+                div2.appendChild(document.createElement("br"));
+                div2.appendChild(document.createElement("br"));
+                document.getElementById("slider").appendChild(div2);
+                img.onerror = function(){
+                    // If an image is not found, remove the card container from the "slider":
+                    document.getElementById("slider").removeChild(document.getElementById(this.id).parentElement.parentElement);
+                };
+                div.onclick = function(){
+                    // If the image container is clicked, turn the card.
+                    var img = this.querySelectorAll("iframe,img")[0];
+                    if(img.alt != ""){
+                        // If the card's other side has an own image, create a new image element:
+                        var imgx = document.createElement(img.tagName);
+                        imgx.src = img.alt;
+                        imgx.alt = img.src;
+                        imgx.id = img.id;
+                        imgx.style.height = img.style.height;
+                        imgx.style.width = img.style.width;
+                        imgx.style.top = img.style.top;
+                        imgx.style.left = img.style.left;
+                        if(get_param("filetype") == "url" && img.tagName.toLowerCase() == "iframe"){
+                            imgx.style.transform = img.style.transform;
+                            imgx.style.transformOrigin = img.style.transformOrigin;
+                            var s = (img.name == "front" ? -1 : 1);
+                            imgx.style.top = add_to_pixels(img.style.top, s*Math.round(px_per_mm*card_h_mm-35));
+                        }
+                        imgx.name = (img.name == "front" ? "back" : "front");
+                        this.removeChild(img);
+                        this.appendChild(imgx);
+                    }
+                    else {
+                        // If the card's other side is in the same image, horizontally mirror the image window:
+                        var inv_left = (img.style.left.startsWith("-") ? img.style.left.substr(1) : "-" + img.style.left);
+                        img.style.left = add_to_pixels(inv_left, Math.round(px_per_mm*(card_w_mm-parseInt(img.style.width.replace("mm", "")))));
+                        img.name = (img.name == "front" ? "back" : "front");
+                    }
+                };
+            }
+            function start(){
+                // Filename of the file selected by the user:
+                var filename = get_param("filename");
+                // Path to the file:
+                var path = "https://docs.google.com/viewer?url=";
+                if(get_param("filetype") != "url"){
+                    filename = filename.replace(/.*[\/\\]/, "");
+                    path = "Legenden/";
+                }
+                // File ending, legend's name and (for images:) numbering style:
+                var parts = filename.split(".");
+                var ending = parts.pop();
+                var fullname = parts.join(".");
+                var legend = fullname;
+                var base = null;
+                var number = null;
+                if(get_param("filetype") == "jpg"){
+                    legend = legend.replace(/[\-\_](page\-)?\d+$/, "");
+                    base = fullname.substr(legend.length).replace(/\d+$/, "");
+                    number = fullname.substr(legend.length + base.length);
+                }
+                // First page with legend cards and maximum number of pages to load:
+                var i_start = parseInt(get_param("startpage"));
+                var max_pages = (ending.toLowerCase() == "pdf" ? parseInt(get_param("pagecount")) : 99);
+                // Number of legend cards per page:
+                var k_num = 1;
+                if(get_param("scheme") != "X"){
+                    k_num = get_param("scheme").split("x");
+                    k_num = parseFloat(k_num[0])*parseFloat(k_num[1]);
+                }
+                // Try source paths with and without leading zeros (0) or only without leading zeros (1):
+                var z_start = (ending.toLowerCase() == "pdf" ? 1 : 0);
+                // Clear legend cards slider:
+                document.getElementById("slider").innerHTML = "";
+                // Add checklist:
+                create_img("X", "", "Checkliste", "", 1, "jpg", 0, 0, i_start-1, i_start-1, 0);
+                // Add legend cards:
+                for(var z = z_start; z <= 1; ++z){
+                    for(var i = i_start; i <= (z == 0 ? Math.min(9, max_pages) : max_pages); ++i){
+                        for(var k = 1; k <= k_num; ++k){
+                            create_img(get_param("scheme"), path, legend, base, number, ending, z_start, z, i_start, i, k);
+                        }
+                    }
+                }
+            }
+            // Resize slider so that legend cards fit the screen width/height:
+            var slider = document.getElementById("slider");
+            var slider_w = Math.round(px_per_mm*card_w_mm);
+            var window_w = window.innerWidth;
+            var slider_h = Math.round(px_per_mm*card_h_mm);
+            var window_h = window.innerHeight;
+            slider.style.zoom = (0.9*Math.min(window_w/slider_w, window_h/slider_h)).toString();
+        </script>
+    </body>
 </html>
