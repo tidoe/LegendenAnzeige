@@ -10,9 +10,14 @@ Tool zum Anzeigen von Bonus- und Fan-Legenden der Spielereihe [*Legenden von And
 
 \*Diese Spielhilfe ist ein Fan-Projekt und steht in keinerlei Verbindung zu den Machern der Andor-Spielereihe.
 
-**Download:** Die Legenden-Anzeige kann über [Code] → [Download ZIP] heruntergeladen werden.
+**Download:** Der Ordner `LegendenAnzeige` kann über [Code] → [Download ZIP] heruntergeladen werden.
 
-**Benutzung:** Um die Legenden-Anzeige zu benutzen, muss die Datei `LegendenAnzeige.html` auf dem entsprechende Gerät gespeichert werden. Sie kann dann einfach in einem Web-Browser (z. B. *Google Chrome*) geöffnet werden. Die Legendenkarten, die angezeigt werden sollen, müssen im Ordner `Legenden` gespeichert werden. Genauere Anweisungen werden in der Legenden-Anzeige angezeigt.
+**Benutzung:** Der ZIP-Ordner muss entpackt und auf dem entsprechenden Gerät gespeichert werden. Die Legenden-Anzeige kann dann einfach in einem Web-Browser (z. B. *Google Chrome*) geöffnet werden, indem man in die URL-Zeile den Pfad zur Datei `LegendenAnzeige.html` eingibt:
+
+- bei Windows: `file:///C:/.../LegendenAnzeige/LegendenAnzeige.html`
+- bei Android: `file:///sdcard/.../LegendenAnzeige/LegendenAnzeige.html`
+
+(Wobei die Punkte durch den genauen Pfad zum Speicherort ersetzt werden müssen und auch der Anfang je nach Gerät variieren kann.) Die Legendenkarten, die angezeigt werden sollen, müssen im Ordner `Legenden` gespeichert werden. Genauere Anweisungen werden in der Legenden-Anzeige angezeigt.
 
 **Bildquellen:** Sofern eine Internetverbindung besteht, wird zusätzlich zu den Legendenkarten auch die Checkliste angezeigt. Die Bilder werden dabei direkt aus diesen Quellen verlinkt:
 - Vorderseite
