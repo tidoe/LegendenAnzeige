@@ -268,7 +268,7 @@
                 /* Format a number as it is in the filename (add leading zeros).
                 */
                 var n = i.toString();
-                if(number.startsWith("0") || (z == 1 && n.length < number.length)){
+                if(z == 1){
                     while(n.length < number.length){
                         n = "0" + n;
                     }
