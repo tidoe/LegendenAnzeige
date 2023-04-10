@@ -269,7 +269,7 @@
                 */
                 var n = i.toString();
                 if(z == 1){
-                    while(n.length < number.length){
+                    while(n.length < Math.max(2, number.length)){
                         n = "0" + n;
                     }
                 }
