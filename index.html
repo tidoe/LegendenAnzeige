@@ -1,0 +1,346 @@
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="user-scalable=no"/>
+        <title>LegendenAnzeige</title>
+        <link rel="author" href="https://legenden-von-andor.de/forum/memberlist.php?mode=viewprofile&u=18387"/>
+        <style type="text/css">
+            a {
+                color: white;
+            }
+            body {
+                background-color: black;
+                color: white;
+                font-family: 'Tahoma';
+                font-size: 16px;
+                overflow-x: hidden;
+                text-align: center;
+                text-size-adjust: 300%;
+            }
+            button, input, label, option, select, table {
+                font-size: 16px;
+                min-width: 10vw;
+                text-size-adjust: 300%;
+            }
+            img {
+                background-color: white;
+                position: absolute;
+            }
+            ol, ul {
+                margin: auto;
+                text-align: left;
+                width: fit-content;
+            }
+            p {
+                font-style: italic;
+            }
+            table {
+                display: inline-table;
+                table-layout: fixed;
+                text-align: center;
+                vertical-align: middle;
+                width: 50vw;
+            }
+            .arrow {
+                zoom: 0.5;
+            }
+            .card {
+                display: inline-block;
+                overflow: hidden;
+                position: relative;
+                vertical-align: middle;
+            }
+            #slider {
+                display: inline-block;
+            }
+            #startpage {
+                text-align: right;
+                width: 50px;
+            }
+        </style>
+    </head>
+    <body lang="de">
+        <div>
+            <div id="jpg" style="display:block;">
+                <ol>
+                    <li>
+                        <p>Konvertiere eine Legende in .jpg-Dateien (eine Datei pro Seite) und entpacke das .zip-Verzeichnis.</p>
+                        <p>Mögliche Tools für die Konvertierung sind:
+                            <br/>
+                            <a href="https://pdftoimage.com/de/" target="_blank">pdftoimage.com/de</a>
+                            <br/>
+                            <a href="https://pdf2jpg.net" target="_blank">pdf2jpg.net</a>
+                            <br/>
+                            <a href="https://www.pdf2go.com/de/pdf-in-jpg" target="_blank">pdf2go.com/de/pdf-in-jpg</a>
+                            <br/>
+                            <a href="https://www.ilovepdf.com/pdf_to_jpg" target="_blank">ilovepdf.com/pdf_to_jpg</a>
+                        </p>
+                    </li>
+                    <li><p>Wähle hier die .jpg-Dateien aus:</p></li>
+                </ol>
+            </div>
+        </div>
+        <div>
+            <form onsubmit="return false">
+                <input id="filename" type="file" accept=".jpg" placeholder="Keine ausgewählt" onchange="start()" multiple/>
+                <br/>
+                <input type="submit" id="filename-button" style="display:none;" onclick="start()" value="URL auswählen"/>
+            </form>
+        </div>
+        <br/>
+        <div>
+            <p>Die erste Legendenkarte ist auf Seite ...</p>
+            <input id="startpage" type="number" min="1" value="1" readonly/>&nbsp;<button onclick="document.getElementById('startpage').value=Math.max(parseInt(document.getElementById('startpage').value)-1,1).toString();start()">&minus;</button>&nbsp;<button onclick="document.getElementById('startpage').value=(parseInt(document.getElementById('startpage').value)+1).toString();start()">+</button>
+            <p>(vorangehende Seiten werden ignoriert)</p>
+        </div>
+        <br/>
+        <div>
+            <p>In welchem Schema sind die Legendenkarten auf einer Seite angeordnet?</p>
+            <input type="radio" name="scheme" id="X" value="X" onchange="start()" checked/><label for="X"><tt>1&times;&half;</tt>&nbsp;&nbsp;<table border="1" cellpadding="3" cellspacing="3"><tr><td>A<br/>Vorderseite/Rückseite</td></tr></table></label>
+            <br/><br/>
+            <input type="radio" name="scheme" id="1x1" value="1x1" onchange="start()"/><label for="1x1"><tt>1&times;1</tt>&nbsp;&nbsp;<table border="1" cellpadding="3" cellspacing="3"><tr><td>A<br/>Vorderseite</td><td>A<br/>Rückseite</td></tr></table></label>
+            <br/><br/>
+            <input type="radio" name="scheme" id="2x1" value="2x1" onchange="start()"/><label for="2x1"><tt>2&times;1</tt>&nbsp;&nbsp;<table border="1" cellpadding="3" cellspacing="3"><tr><td>A<br/>Vorderseite</td><td>A<br/>Rückseite</td></tr><tr><td>B<br/>Vorderseite</td><td>B<br/>Rückseite</td></tr></table></label>
+        </div>
+        <br/>
+        <div>
+            <p>Benutze die Pfeile, um die Legendenkarten zu verschieben; klicke auf eine Legendenkarte, um sie umzudrehen.</p>
+            <p>Viel Spaß!</p>
+        </div>
+        <br/>
+        <div>
+            <p>Checkliste oder Mini-Erweiterung:</p>
+            <select id="mini-expansion" onchange="load_checklist()">
+                <option value="" selected></option>
+                <option value="checkliste">Checkliste (Grundspiel)</option>
+                <option value="das_chaos">Das Chaos</option>
+                <option value="das_letzte_lagerfeuer">Das letzte Lagerfeuer</option>
+                <option value="das_licht_der_fuenften_stunde">Das Licht der fünften Stunde</option>
+                <option value="der_magische_sturm">Der magische Sturm</option>
+                <option value="der_ruf_der_skrale">Der Ruf der Skrale</option>
+                <option value="die_bruderfeuer">Die Bruderfeuer</option>
+                <option value="die_magie_von_choranat">Die Magie von Choranat</option>
+                <option value="die_nixe_irja">Die Nixe Irja</option>
+                <option value="die_taverne_von_andor">Die Taverne von Andor</option>
+                <option value="die_wunschbrunnen">Die Wunschbrunnen</option>
+                <option value="garz_der_handelszwerg">Garz der Handelszwerg</option>
+                <option value="koram_der_gor_haeuptling">Koram, der Gor-Häuptling</option>
+                <option value="launische_waldgeister">Launische Waldgeister</option>
+                <option value="varatans_leuchtturm">Varatans Leuchtturm</option>
+                <option value="zwei_junge_bewahrer">Zwei junge Bewahrer</option>
+                <option value="#">Zufällige Mini-Erweiterung</option>
+            </select>
+        </div>
+        <br/>
+        <div id="slider"></div>
+        <br/>
+        <script type="text/javascript">
+            // Constants:
+            const a4_h_mm = 297;    // A4 paper height
+            const a4_w_mm = 210;    // A4 paper width
+            const card_h_mm = 120;  // legend card height
+            const card_w_mm = 80;   // legend card width
+            const px_per_mm = 3.78; // approx. number of pixels per mm
+            function add_to_pixels(px, n){
+                /* Function that takes a string of pixels (e.g. "5px") and a number of pixels (e.g. "-3") and returns the sum (e.g. "2px");
+                   since it is used for changing top/left, the value has to be negative.
+                */
+                return Math.min((parseInt(px.replace("px"))+n), 0).toString() + "px";
+            }
+            function get_param(name){
+                /* Function to get user-input parameters.
+                */
+                if(name == "scheme"){
+                    return document.querySelector('input[name="' + name + '"]:checked').value;
+                }
+                return document.getElementById(name).value;
+            }
+            function create_button(pos){
+                /* Create an arrow button for an image.
+                */
+                var btn = document.createElement("button");
+                btn.innerHTML = pos;
+                btn.className = "arrow";
+                btn.onclick = function(){
+                    // On click, the window of the image and all images at the same position
+                    // on other pages is moved 4 pixels in the arrow's direction.
+                    var btn_img = this.parentElement.getElementsByClassName("card")[0].querySelectorAll("img")[0];
+                    var imgs = document.querySelectorAll("img");
+                    for(var i = 0; i < imgs.length; ++i){
+                        var img = imgs[i];
+                        if(img.id.split("-").pop() == btn_img.id.split("-").pop()){
+                            var s = (img.name == btn_img.name ? 1 : -1);
+                            if(pos == "&#8592;"){ // to the left
+                                img.style.left = add_to_pixels(img.style.left, -4*s);
+                            }
+                            else if(pos == "&#8593;"){ // to the top
+                                img.style.top = add_to_pixels(img.style.top, -4);
+                            }
+                            else if(pos == "&#8594;"){ // to the right
+                                img.style.left = add_to_pixels(img.style.left, +4*s);
+                            }
+                            else if(pos == "&#8595;"){ // to the bottom
+                                img.style.top = add_to_pixels(img.style.top, +4);
+                            }
+                        }
+                    }
+                };
+                return btn;
+            }
+            function create_img(scheme, file_urls, i_start, i, k){
+                /* Append a card image to the "slider" element.
+                   - "scheme": value of the "scheme" input
+                   - "file_urls": urls of the legend card files
+                   - from the loop below:
+                       - "i_start": first page index
+                       - "i": page index
+                       - "k": card index on page
+                */
+                var img = document.createElement("img");
+                // Image ID:
+                img.id = i.toString() + "-" + k.toString();
+                // Image side ("front"):
+                img.name = "front";
+                if(scheme == "X" && i % 2 != i_start % 2){
+                    // In full-page mode, only every second image should be shown at the start:
+                    return;
+                }
+                // Create the image container:
+                var div = document.createElement("div");
+                div.className = "card";
+                var offset_h_mm = 0;
+                var offset_w_mm = 0;
+                div.style.height = (card_h_mm-offset_h_mm).toString() + "mm";
+                div.style.width = (card_w_mm-offset_w_mm).toString() + "mm";
+                div.style.zoom = 1.0*card_w_mm/(card_w_mm-offset_w_mm);
+                div.appendChild(img);
+                // Create the card container:
+                var div2 = document.createElement("div");
+                div2.appendChild(div);
+                if(scheme != "X"){
+                    // In non-full-page mode, insert buttons to adjust the card window:
+                    div2.appendChild(document.createElement("br"));
+                    div2.appendChild(create_button("&#8592;"));
+                    div2.appendChild(create_button("&#8593;"));
+                    div2.appendChild(create_button("&#8595;"));
+                    div2.appendChild(create_button("&#8594;"));
+                }
+                div2.appendChild(document.createElement("br"));
+                div2.appendChild(document.createElement("br"));
+                document.getElementById("slider").appendChild(div2);
+                img.onload = function () {
+                    var n_pages = 1;
+                    var i_page = 0;
+                    if(scheme == "X"){
+                        // full-page mode
+                        img.style.height = (n_pages*card_h_mm).toString() + "mm";
+                        img.style.width = card_w_mm.toString() + "mm";
+                        img.style.top = "0px";
+                        img.style.left = "0px";
+                    }
+                    else if(img.width > img.height){
+                        img.style.height = (n_pages*a4_w_mm).toString() + "mm";
+                        img.style.width = a4_h_mm.toString() + "mm";
+                        img.style.top = (-Math.round(px_per_mm*((k == "1" == 1 ? 0 : a4_w_mm/2.0)+((a4_w_mm/2.0)-card_h_mm)/2.0+a4_w_mm*i_page))).toString() + "px";
+                        img.style.left = (-Math.round(px_per_mm*((a4_h_mm/2.0)-card_w_mm)/2.0)).toString() + "px";
+                    }
+                    else {
+                        // portrait mode
+                        img.style.height = (n_pages*a4_h_mm).toString() + "mm";
+                        img.style.width = a4_w_mm.toString() + "mm";
+                        img.style.top = (-Math.round(px_per_mm*((k == "1" ? 0 : a4_h_mm/2.0)+((a4_h_mm/2.0)-card_h_mm)/2.0+a4_h_mm*i_page))).toString() + "px";
+                        img.style.left = (-Math.round(px_per_mm*((a4_w_mm/2.0)-card_w_mm)/2.0)).toString() + "px";
+                    }
+                }
+                img.onerror = function(){
+                    // If an image is not found, remove the card container from the "slider":
+                    document.getElementById("slider").removeChild(document.getElementById(this.id).parentElement.parentElement);
+                };
+                div.onclick = function(){
+                    // If the image container is clicked, turn the card.
+                    var img = this.querySelectorAll("img")[0];
+                    if(img.alt != ""){
+                        // If the card's other side has an own image, create a new image element:
+                        var imgx = document.createElement(img.tagName);
+                        imgx.src = img.alt;
+                        imgx.alt = img.src;
+                        imgx.id = img.id;
+                        imgx.style.height = img.style.height;
+                        imgx.style.width = img.style.width;
+                        imgx.style.top = img.style.top;
+                        imgx.style.left = img.style.left;
+                        imgx.name = (img.name == "front" ? "back" : "front");
+                        this.removeChild(img);
+                        this.appendChild(imgx);
+                    }
+                    else {
+                        // If the card's other side is in the same image, horizontally mirror the image window:
+                        var inv_left = (img.style.left.startsWith("-") ? img.style.left.substr(1) : "-" + img.style.left);
+                        img.style.left = add_to_pixels(inv_left, Math.round(px_per_mm*(card_w_mm-parseInt(img.style.width.replace("mm", "")))));
+                        img.name = (img.name == "front" ? "back" : "front");
+                    }
+                };
+                // Load the JPG files.
+                img.src = file_urls[i-1];
+                img.alt = "";
+                if(scheme == "X"){ // full-page mode
+                    img.alt = file_urls[i];
+                }
+            }
+            function load_checklist(){
+                var name = document.getElementById("mini-expansion").value;
+                if(name == "#"){
+                    var values = Array.from(document.getElementById("mini-expansion").getElementsByTagName("option")).map(option => option.value).filter(value => !["", "#", "checkliste"].includes(value));
+                    document.getElementById("mini-expansion").value = values[Math.floor(Math.random() * values.length)];
+                    document.getElementById("mini-expansion").onchange();
+                }
+                else {
+                    var slider = document.getElementById("slider");
+                    if(slider.querySelector("#checklist")){
+                        slider.removeChild(slider.querySelector("#checklist").parentElement.parentElement);
+                    }
+                    if(!(name == "")){
+                        create_img("X", ["Bilder/" + name + "-1.jpg", "Bilder/" + name + "-2.jpg"], 1, 1, 1);
+                        slider.lastElementChild.firstElementChild.firstElementChild.id = "checklist";
+                        slider.insertBefore(slider.lastElementChild, slider.firstElementChild);
+                    }
+                }
+            }
+            function start(){
+                var files = Array.from(document.getElementById("filename").files).sort(function(a, b){
+                    return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
+                });
+                var file_urls = files.map(file => URL.createObjectURL(file));
+                // First page with legend cards and maximum number of pages to load:
+                var i_start = parseInt(get_param("startpage"));
+                var max_pages = file_urls.length;
+                // Number of legend cards per page:
+                var k_num = 1;
+                if(get_param("scheme") != "X"){
+                    k_num = get_param("scheme").split("x");
+                    k_num = parseFloat(k_num[0])*parseFloat(k_num[1]);
+                }
+                // Clear legend cards slider:
+                var nodes = Array.from(document.getElementById("slider").childNodes);
+                for(var n = 0; n < nodes.length; ++n){
+                    if(!nodes[n].querySelector("#checklist")){
+                        document.getElementById("slider").removeChild(nodes[n]);
+                    }
+                }
+                // Add legend cards:
+                for(var i = i_start; i <= max_pages; ++i){
+                    for(var k = 1; k <= k_num; ++k){
+                        create_img(get_param("scheme"), file_urls, i_start, i, k);
+                    }
+                }
+            }
+            // Resize slider so that legend cards fit the screen width/height:
+            var slider = document.getElementById("slider");
+            var slider_w = Math.round(px_per_mm*card_w_mm);
+            var window_w = window.innerWidth;
+            var slider_h = Math.round(px_per_mm*card_h_mm);
+            var window_h = window.innerHeight;
+            slider.style.zoom = (0.9*Math.min(window_w/slider_w, window_h/slider_h)).toString();
+        </script>
+    </body>
+</html>

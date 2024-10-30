@@ -1,5 +1,7 @@
 # Legenden-Anzeige
 
+Webseite: https://tidoe.github.io/LegendenAnzeige/
+
 Tool zum Anzeigen von Bonus- und Fan-Legenden der Spielereihe [*Legenden von Andor*](https://legenden-von-andor.de/)\* auf dem Smartphone oder Computer.
 
 <p align="center">
@@ -10,19 +12,44 @@ Tool zum Anzeigen von Bonus- und Fan-Legenden der Spielereihe [*Legenden von And
 
 \*Diese Spielhilfe ist ein Fan-Projekt und steht in keinerlei Verbindung zu den Machern der Andor-Spielereihe.
 
-**Download:** Der Ordner `LegendenAnzeige` kann über [Code] → [Download ZIP] heruntergeladen werden.
+## Bildquellen
 
-**Benutzung:** Der ZIP-Ordner muss entpackt und auf dem entsprechenden Gerät gespeichert werden. Die Legenden-Anzeige kann dann einfach in einem Web-Browser (z. B. *Google Chrome*) geöffnet werden, indem man in die URL-Zeile den Pfad zur Datei `LegendenAnzeige.html` eingibt:
+Die Bilder der Checkliste und Mini-Erweiterungen stammen aus den folgenden Quellen:
 
-- bei Windows: `file:///C:/.../LegendenAnzeige/LegendenAnzeige.html`
-- bei Android: `file:///sdcard/.../LegendenAnzeige/LegendenAnzeige.html`
-
-(Wobei die Punkte durch den genauen Pfad zum Speicherort ersetzt werden müssen und auch der Anfang je nach Gerät variieren kann.) Die Legendenkarten, die angezeigt werden sollen, müssen im Ordner `Legenden` gespeichert werden. Genauere Anweisungen werden in der Legenden-Anzeige angezeigt.
-
-**Bildquellen:** Sofern eine Internetverbindung besteht, wird zusätzlich zu den Legendenkarten auch die Checkliste angezeigt. Die Bilder werden dabei direkt aus diesen Quellen verlinkt:
-- Vorderseite
-	- Webseite: [https://www.poeppelkiste.de/rezensionen/2012/andor/andor.php](https://www.poeppelkiste.de/rezensionen/2012/andor/andor.php)
-	- Bild: [https://www.poeppelkiste.de/rezensionen/2012/andor/liste.gif](https://www.poeppelkiste.de/rezensionen/2012/andor/liste.gif)
-- Rückseite
-	- Webseite: [https://legenden-von-andor.de/forum/viewtopic.php?f=9&t=2316&p=34270](https://legenden-von-andor.de/forum/viewtopic.php?f=9&t=2316&p=34270)
-	- Bild: [https://legenden-von-andor.de/forum/download/file.php?id=798&sid=4eb4246852856b032ff1ac1cd2c933f3&mode=view](https://legenden-von-andor.de/forum/download/file.php?id=798&sid=4eb4246852856b032ff1ac1cd2c933f3&mode=view)
+- *Checkliste*
+	- https://www.poeppelkiste.de/rezensionen/2012/andor/andor.php
+	- https://legenden-von-andor.de/forum/viewtopic.php?f=9&t=2316&p=34270
+- *Das Chaos*
+	- https://legenden-von-andor.de/mini-erweiterung-das-chaos/
+- *Das letzte Lagerfeuer*
+	- https://boardgamegeek.com/image/1599830/die-legenden-von-andor-das-letzte-lagerfeuer
+	- https://boardgamegeek.com/image/1599831/die-legenden-von-andor-das-letzte-lagerfeuer
+- *Das Licht der fünften Stunde*
+	- https://legenden-von-andor.de/mini-erweiterung-das-licht-der-fuenften-stunde/
+- *Der magische Sturm*
+	- https://boardgamegeek.com/image/7558326/die-legenden-von-andor-die-ewige-kalte-der-magisch
+	- https://boardgamegeek.com/image/7558327/die-legenden-von-andor-die-ewige-kalte-der-magisch
+- *Der Ruf der Skrale*
+	- https://legenden-von-andor.de/mini-erweiterung-der-ruf-der-skrale/
+- *Die Bruderfeuer*
+	- https://boardgamegeek.com/image/8051677/die-legenden-von-andor-die-ewige-kalte-die-bruderf
+	- https://boardgamegeek.com/image/8051678/die-legenden-von-andor-die-ewige-kalte-die-bruderf
+- *Die Magie von Choranat*
+	- https://legenden-von-andor.de/mini-erweiterung-die-magie-von-choranat/
+- *Die Nixe Irja*
+	- https://legenden-von-andor.de/mini-erweiterung-die-nixe-irja/
+- *Die Taverne von Andor*
+	- https://boardgamegeek.com/image/2927210/die-legenden-von-andor-die-taverne-von-andor
+- *Die Wunschbrunnen*
+	- https://legenden-von-andor.de/mini-erweiterung-die-wunschbrunnen/
+- *Garz der Handelszwerg*
+	- https://legenden-von-andor.de/mini-erweiterung-garz-der-handelszwerg/
+- *Koram, der Gor-Häuptling*
+	- https://legenden-von-andor.de/mini-erweiterung-koram-der-gor-haeuptling/
+- *Launische Waldgeister*
+	- https://legenden-von-andor.de/mini-erweiterung-launische-waldgeister/
+- *Varatans Leuchtturm*
+	- https://die-legenden-von-andor.fandom.com/de/wiki/Datei:Mini-Erweiterung_Varatans_Leuchtturm_Deutsch.jpg
+	- https://boardgamegeek.com/image/7784198/legends-of-andor-varatans-lighthouse
+- *Zwei junge Bewahrer*
+	- https://legenden-von-andor.de/mini-erweiterung-zwei-junge-bewahrer/
